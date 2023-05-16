@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = 'http://localhost:3001/api/getdata';
+const baseUrl = 'http://localhost:3001/api/';
 
 const instance = axios.create({
     baseURL: baseUrl,
@@ -7,6 +7,8 @@ const instance = axios.create({
         "Content-Type": "application/json",
     },
 });
+
+export default instance;
 
 // import axios from "axios";
 // import TokenService from "./tokenService";
@@ -79,4 +81,4 @@ const instance = axios.create({
 //     }
 // );
 
-export default instance;
+// export default instance;

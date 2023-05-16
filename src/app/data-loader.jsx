@@ -1,35 +1,39 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { toDataSourceRequestString,toDataSourceRequest } from '@progress/kendo-data-query';
+import api from './services/api';
+import _ from 'lodash';
+
 export const DataLoader = props => {
-  const baseUrl = 'http://localhost:3001/api/getdata?';
-  const init = {
-    method: 'GET',
-    accept: 'application/json',
-    headers: {}
-  };
-  const lastSuccess = React.useRef('');
-  const pending = React.useRef('');
+  const {method,url}=props;
+  const lastSuccess = React.useRef(null);
+  const pending = React.useRef(null);
+
   const requestDataIfNeeded = () => {
-    if (pending.current || toDataSourceRequestString(props.dataState) === lastSuccess.current) {
+    if (pending.current!=null || _.isEqual(toDataSourceRequest(props.dataState),lastSuccess.current)) {
       return;
     }
-    pending.current = toDataSourceRequestString(props.dataState);
-    fetch(baseUrl + pending.current, init).then(response => response.json()).then(json => {
-      lastSuccess.current = pending.current;
-      pending.current = '';
-      if (toDataSourceRequestString(props.dataState) === lastSuccess.current) {
-        props.onDataReceived.call(undefined, {
-          data: json.data,
-          total: json.total
+    pending.current = toDataSourceRequest(props.dataState);
+    if(method==='get'){
+        api.get(url, {params:pending.current})
+        .then(res => {
+          const result=res.data;
+          lastSuccess.current = pending.current;
+          pending.current = null;
+          if (_.isEqual(toDataSourceRequest(props.dataState),lastSuccess.current)) {
+            props.onDataReceived.call(undefined, {
+              data: result.data,
+              total: result.total
+            });
+          } else {
+            requestDataIfNeeded();
+          }
         });
-      } else {
-        requestDataIfNeeded();
-      }
-    });
-  };
-  requestDataIfNeeded();
-  return pending.current ? <LoadingPanel /> : null;
+      };
+    }
+    requestDataIfNeeded();
+    return pending.current ? <LoadingPanel /> : null;
+
 };
 const LoadingPanel = () => {
   const loadingPanel = <div className="k-loading-mask">

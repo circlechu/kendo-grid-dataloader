@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { Grid, GridColumn as Column } from '@progress/kendo-react-grid';
 import { DataLoader } from './data-loader';
 const App = () => {
@@ -14,8 +14,8 @@ const App = () => {
   const dataStateChange = e => {
     setDataState(e.dataState);
   };
-  const dataReceived = products => {
-    setProducts(products);
+  const dataReceived = data => {
+    setData(data);
   };
   return <div>
         <Grid filterable={false} sortable={true} pageable={true} {...dataState} data={data} onDataStateChange={dataStateChange}>
@@ -25,7 +25,8 @@ const App = () => {
           <Column field="UnitsInStock" filter="numeric" title="In stock" />
         </Grid>
 
-        <DataLoader dataState={dataState} onDataReceived={dataReceived} />
+        <DataLoader dataState={dataState} onDataReceived={dataReceived} method="get" url="getData" />
       </div>;
 };
-ReactDOM.render(<App />, document.querySelector('my-app'));
+
+ReactDOM.createRoot(document.querySelector('my-app')).render(<App/>);
