@@ -27,6 +27,8 @@ app.get('/', (req, res) => {
 });
 
 
+app.post('/api/getData', api.getData);
+
 app.get('/api/getData', api.getData);
 
 app.listen(port, () => console.log(`
