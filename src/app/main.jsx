@@ -5,7 +5,7 @@ import { DataLoader } from './data-loader';
 const App = () => {
   const [data, setData] = React.useState({
     data: [],
-    total: 77
+    total: 0
   });
   const [dataState, setDataState] = React.useState({
     take: 10,
@@ -26,6 +26,7 @@ const App = () => {
         </Grid>
 
         <DataLoader dataState={dataState} onDataReceived={dataReceived} method="post" url="getData" />
+
       </div>;
 };
 
