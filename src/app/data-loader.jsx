@@ -13,6 +13,7 @@ export const DataLoader = props => {
         if (pending.current != null || _.isEqual(toDataSourceRequest(props.dataState), lastSuccess.current)) {
             return;
         }
+        console.log(JSON.stringify(props.dataState,null,4));
         pending.current = toDataSourceRequest(props.dataState);
         
 

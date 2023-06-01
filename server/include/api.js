@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path';
 import { json } from "express";
 
+import parseFitlerStr from './filterHelper/index.js';
+
 const {__dirname, __filename} = fileDirName(import.meta);
 const jsonFilePath=path.join(__dirname,'../public/json/');
 
@@ -14,6 +16,10 @@ export const getData=(req, res) => {
 
     const {page,pageSize,filter,sort}=method==="GET"?query:body;
     
+    const filterFn=parseFitlerStr(filter);
+    
+
+    console.log(filterFn);
     const take=parseInt(pageSize);
     const skip= (parseInt(page) - 1 ) * pageSize;
 
@@ -23,7 +29,13 @@ export const getData=(req, res) => {
     try {
         const buffer = fs.readFileSync(jsonfile);
         let data=JSON.parse(buffer.toString());
-       
+        if(_.isFunction(filterFn)){
+            data=_(data).filter(x=>filterFn(x)).value();
+        }
+        if(sort){
+            const [fields,orders]=sort.split('-')
+            data=_.orderBy(data,[fields],[orders]);
+        }
         result={total:data.length,data:data.slice(skip,take+skip)};
 
     } catch (e) {
