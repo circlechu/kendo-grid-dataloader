@@ -1,28 +1,54 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 const opMap = {
     "lt": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `moment(new Date(x.${field}),'YYYY-MM-DD').isBefore(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
         return `x.${field} < ${value}`
     },
     "lte": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `moment(new Date(x.${field}),'YYYY-MM-DD').isSameOrBefore(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
         return `x.${field} <= ${value}`
     },
     "gt": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `moment(new Date(x.${field}),'YYYY-MM-DD').isAfter(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
         return `x.${field} > ${value}`
     },
     "gte": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `moment(new Date(x.${field}),'YYYY-MM-DD').isSameOrAfter(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
+         
         return `x.${field} >= ${value}`
     },
     "eq": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `moment(new Date(x.${field}),'YYYY-MM-DD').isSame(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
         return `x.${field} == ${value}`
     },
     "neq": arr => {
-        const [field,op,value]=arr;
+        let [field,op,value]=arr;
+        if(value.includes('datetime')){
+            value=value.replace(/'|datetime/g,'');
+            return `!moment(new Date(x.${field}),'YYYY-MM-DD').isSame(moment('${value}','YYYY-MM-DD'),'day');`;
+        }
         return `x.${field} != ${value}`
     },
     "startswith": arr => {
@@ -66,6 +92,7 @@ const opMap = {
 
 const parseFitlerStr = str => {
     try {
+        if(typeof(str)=="undefined" || str.includes('undefined')) return null;
         let query="";
         // var rx1 = /\[([^\]]+)]/;
         var rx2 = /\(([^)]+)\)/;

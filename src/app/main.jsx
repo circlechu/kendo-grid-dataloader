@@ -23,6 +23,12 @@ const App = () => {
           <Column field="ProductName" title="Name" />
           <Column field="UnitPrice" filter="numeric" format="{0:c}" title="Price" />
           <Column field="UnitsInStock" filter="numeric" title="In stock" />
+          <Column field="Discontinued" filter="boolean" title="In stock" />
+          <Column
+            field="FirstOrderedOn"
+            filter="date"
+            format="{0:d}"
+          />
         </Grid>
 
         <DataLoader dataState={dataState} onDataReceived={dataReceived} method="post" url="getData" />

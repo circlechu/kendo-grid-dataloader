@@ -3,11 +3,13 @@ import _ from 'lodash'
 import fs from 'fs'
 import path from 'path';
 import { json } from "express";
+import moment from "moment/moment.js";
 
 import parseFitlerStr from './filterHelper/index.js';
 
 const {__dirname, __filename} = fileDirName(import.meta);
 const jsonFilePath=path.join(__dirname,'../public/json/');
+
 
 
 export const getData=(req, res) => {
@@ -29,6 +31,14 @@ export const getData=(req, res) => {
     try {
         const buffer = fs.readFileSync(jsonfile);
         let data=JSON.parse(buffer.toString());
+        let startDate=moment();
+        _(data).forEach((d,i)=>{
+            if(!_.get(d,'FirstOrderedOn')){
+                
+                let date =startDate.add(i,'days').format('MM/DD/YYYY')
+                _.set(d,'FirstOrderedOn',date)
+            }
+        });
         if(_.isFunction(filterFn)){
             data=_(data).filter(x=>filterFn(x)).value();
         }
@@ -39,7 +49,7 @@ export const getData=(req, res) => {
         result={total:data.length,data:data.slice(skip,take+skip)};
 
     } catch (e) {
-        console.error(e.message);
+        console.error('here-----------'+e.message);
     }
     res.setHeader('Content-Type', 'application/json');
     res.send(result);
