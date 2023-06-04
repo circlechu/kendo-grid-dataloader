@@ -5,7 +5,7 @@ import path from 'path';
 import { json } from "express";
 import moment from "moment/moment.js";
 
-import parseFitlerStr from './filterHelper/index.js';
+import * as FilterConverter from "./filter-parser/index.js";
 
 const {__dirname, __filename} = fileDirName(import.meta);
 const jsonFilePath=path.join(__dirname,'../public/json/');
@@ -18,7 +18,7 @@ export const getData=(req, res) => {
 
     const {page,pageSize,filter,sort}=method==="GET"?query:body;
     
-    const filterFn=parseFitlerStr(filter);
+    const filterFn=FilterConverter.toLodashFn(filter);
     
 
     console.log(filterFn);
@@ -40,7 +40,7 @@ export const getData=(req, res) => {
             }
         });
         if(_.isFunction(filterFn)){
-            data=_(data).filter(x=>filterFn(x)).value();
+            data=_(data).filter(x=>filterFn(x,moment)).value();
         }
         if(sort){
             const [fields,orders]=sort.split('-')
