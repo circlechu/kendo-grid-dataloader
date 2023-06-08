@@ -5,7 +5,8 @@ import path from 'path';
 import { json } from "express";
 import moment from "moment/moment.js";
 
-import * as FilterConverter from "./filter-parser/index.js";
+// import * as FilterConverter from "./filter-parser/index.js";
+import * as FilterConverter from 'kendo-filter-string-parser';
 
 const {__dirname, __filename} = fileDirName(import.meta);
 const jsonFilePath=path.join(__dirname,'../public/json/');

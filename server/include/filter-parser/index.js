@@ -81,6 +81,9 @@ const toLodash = (filter) => {
     filter = filter.replace(/([^\s]+)~startswith~'([^']+)'/gi, " /^$2/gi.test(x.$1)");
     filter = filter.replace(/([^\s]+)~contains~'([^']+)'/gi, " /$2/gi.test(x.$1)");
     
+    filter = filter.replace(/([^\s]+)~startswith~''/gi, " /^$2/gi.test(x.$1)");
+    filter = filter.replace(/([^\s]+)~contains~''/gi, " /$2/gi.test(x.$1)");
+    
     // 匹配最内层的括号表达式
     const regex = /\(([^()]+)\)/g;
 
