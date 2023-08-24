@@ -33,6 +33,9 @@ export const DataLoader = props => {
             pending.current = null;
             if (_.isEqual(toDataSourceRequest(props.dataState), lastSuccess.current)) {
                 props.onDataReceived.call(undefined, {
+                    columns:[
+                        {field:"ProductName"}
+                    ],
                     data: result.data,
                     total: result.total
                 });
