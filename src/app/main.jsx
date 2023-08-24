@@ -2,9 +2,9 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Grid, GridColumn as Column } from '@progress/kendo-react-grid';
 import { DataLoader } from './data-loader';
-
+import shortid from 'shortid';
 const App = () => {
-  const [key,setKey]=React.useState(1);
+  const [key,setKey]=React.useState(shortid.generate());
   const [columns,setColumns]=React.useState([]);
   const [data, setData] = React.useState({
     columns:[],
@@ -21,7 +21,7 @@ const App = () => {
   const dataReceived = data => {
     
     setColumns(data.columns);
-    setKey(Math.random());
+    setKey(shortid.generate());
     setData(data);
   };
   return <div>
@@ -41,7 +41,7 @@ const App = () => {
           /> */}
         </Grid>
 
-        <DataLoader dataState={dataState} onDataReceived={dataReceived} method="post" url="getData" />
+        <DataLoader key={`data-loader`} dataState={dataState} onDataReceived={dataReceived} method="post" url="getData" />
 
       </div>;
 };
